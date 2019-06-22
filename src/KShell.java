@@ -2,6 +2,7 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
+import java.text.DecimalFormat;
 import java.util.*;
 
 public class KShell {
@@ -57,6 +58,7 @@ public class KShell {
                 break;
             }
             System.out.println(location.get(tar));
+            //System.out.println(location.get(tar).size());//show the original degree of each spot
         }
     }
 
@@ -75,6 +77,9 @@ public class KShell {
 
     public static void clearSpot(HashMap<String,HashSet<String>> location, HashMap<String,String> result){
         for(String key:result.keySet()){
+            if(!location.containsKey(key)){
+                continue;
+            }
             for(String subKey:location.get(key)){
                 location.get(subKey).remove(key);
             }
@@ -107,6 +112,7 @@ public class KShell {
         double tempDegree;
         double tempValue;
         int locSize=0;
+        DecimalFormat outcome = new DecimalFormat("#.0");//regulate all the over-counted decimals caused by the class "Double"
 
         while(!location.isEmpty()){
             tempDegree=location.entrySet().iterator().next().getValue().size()+
@@ -125,7 +131,7 @@ public class KShell {
                     tempSpot.add(key);
                 }
                 else if(tempValue < tempDegree){
-                    tempDegree=locSize+weight*preDeleted.get(key);
+                    tempDegree=tempValue;
                     tempSpot.clear();
                     tempSpot.add(key);
                 }
@@ -134,13 +140,14 @@ public class KShell {
             //add 1 to the root spot of the to-be-deleted spots
 
             for(String key:tempSpot){
-                result.put(key,String.valueOf(tempDegree));
+                result.put(key,outcome.format(tempDegree));
             }//add the deleted the spots and the value to the result
 
             System.out.println(result);
             tempSpot.clear();
             clearSpot(location,result);
         }
+
         return result;
 }
 
@@ -159,9 +166,6 @@ public class KShell {
         HashMap a = calValue(linkedLoc,0.7);
 
         readValue(a);
-
-
-
 
     }
 }
